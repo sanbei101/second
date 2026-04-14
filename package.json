@@ -30,7 +30,7 @@
     "@wot-ui/ui": "2.0.0-alpha.8",
     "pinia": "2.2.4",
     "vue": "3.4.21",
-    "vue-i18n": "9.6.2",
+    "vue-i18n": "11.2.8",
     "vue-router": "4.5.1"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "miniprogram-api-typings": "^5.1.2",
     "sass": "1.99.0",
     "typescript": "5.9.3",
-    "vite": "5.2.8",
+    "vite": "6.4.2",
     "vue-tsc": "^3.2.6"
   }
 }
