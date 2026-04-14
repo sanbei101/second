@@ -1,0 +1,90 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "type": "home"
+    },
+    {
+      "path": "pages/category/index"
+    },
+    {
+      "path": "pages/publish/index"
+    },
+    {
+      "path": "pages/order/index"
+    },
+    {
+      "path": "pages/my/index"
+    },
+    {
+      "path": "pages/goods/detail/index"
+    },
+    {
+      "path": "pages/goods/manage/index"
+    },
+    {
+      "path": "pages/user/login/index"
+    },
+    {
+      "path": "pages/user/register/index"
+    },
+    {
+      "path": "pages/user/profile/index"
+    },
+    {
+      "path": "pages/user/manage/index"
+    },
+    {
+      "path": "pages/order/detail/index"
+    }
+  ],
+  "subPackages": [],
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4D80F0",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home.png"
+      },
+      {
+        "pagePath": "pages/category/index",
+        "text": "分类",
+        "iconPath": "static/tabbar/category.png",
+        "selectedIconPath": "static/tabbar/category.png"
+      },
+      {
+        "pagePath": "pages/publish/index",
+        "text": "发布",
+        "iconPath": "static/tabbar/publish.png",
+        "selectedIconPath": "static/tabbar/publish.png"
+      },
+      {
+        "pagePath": "pages/order/index",
+        "text": "订单",
+        "iconPath": "static/tabbar/order.png",
+        "selectedIconPath": "static/tabbar/order.png"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的",
+        "iconPath": "static/tabbar/my.png",
+        "selectedIconPath": "static/tabbar/my.png"
+      }
+    ]
+  },
+  "globalStyle": {
+    "backgroundColor": "@bgColor",
+    "backgroundColorBottom": "@bgColorBottom",
+    "backgroundColorTop": "@bgColorTop",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "校园二手交易",
+    "navigationStyle": "custom"
+  }
+}
