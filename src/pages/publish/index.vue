@@ -51,15 +51,6 @@ function removeImage(idx: number) {
 }
 
 function submit() {
-  console.log("提交数据", {
-    title: title.value,
-    description: description.value,
-    price: price.value,
-    originalPrice: originalPrice.value,
-    category: category.value,
-    condition: condition.value,
-    images: images.value,
-  });
   if (!title.value || !price.value || !category.value) {
     uni.showToast({ title: "请填写完整信息", icon: "none" });
     return;
@@ -103,67 +94,22 @@ function goBack() {
 
 <template>
   <view>
-    <wd-navbar
-      :title="isEdit ? '编辑商品' : '发布商品'"
-      safe-area-inset-top
-      fixed
-      placeholder
-      left-arrow
-      @click-left="goBack"
-    />
+    <wd-navbar :title="isEdit ? '编辑商品' : '发布商品'" safe-area-inset-top fixed placeholder left-arrow
+      @click-left="goBack" />
 
     <view style="padding: 16px">
       <wd-cell-group border>
-        <wd-input
-          v-model="title"
-          label="商品名称"
-          label-width="90px"
-          placeholder="请输入商品名称"
-        />
-        <wd-cell
-          title="分类"
-          :value="category"
-          placeholder="请选择分类"
-          clickable
-          is-link
-          @click="openCategoryPicker"
-        />
-        <wd-cell
-          title="成色"
-          :value="condition"
-          placeholder="请选择成色"
-          clickable
-          is-link
-          @click="openConditionPicker"
-        />
-        <wd-input
-          v-model="price"
-          label="售价"
-          label-width="90px"
-          placeholder="请输入售价"
-          type="digit"
-        />
-        <wd-input
-          v-model="originalPrice"
-          label="原价"
-          label-width="90px"
-          placeholder="请输入原价"
-          type="digit"
-        />
+        <wd-input v-model="title" label="商品名称" label-width="90px" placeholder="请输入商品名称" />
+        <wd-cell title="分类" :value="category" placeholder="请选择分类" clickable is-link @click="openCategoryPicker" />
+        <wd-cell title="成色" :value="condition" placeholder="请选择成色" clickable is-link @click="openConditionPicker" />
+        <wd-input v-model="price" label="售价" label-width="90px" placeholder="请输入售价" type="digit" />
+        <wd-input v-model="originalPrice" label="原价" label-width="90px" placeholder="请输入原价" type="digit" />
       </wd-cell-group>
 
-      <wd-picker
-        v-model:visible="categoryPickerVisible"
-        :columns="categoryColumns"
-        :model-value="category ? [category] : []"
-        @confirm="onCategoryConfirm"
-      ></wd-picker>
-      <wd-picker
-        v-model:visible="conditionPickerVisible"
-        :columns="conditionColumns"
-        :model-value="condition ? [condition] : []"
-        @confirm="onConditionConfirm"
-      ></wd-picker>
+      <wd-picker v-model:visible="categoryPickerVisible" :columns="categoryColumns"
+        :model-value="category ? [category] : []" @confirm="onCategoryConfirm"></wd-picker>
+      <wd-picker v-model:visible="conditionPickerVisible" :columns="conditionColumns"
+        :model-value="condition ? [condition] : []" @confirm="onConditionConfirm"></wd-picker>
 
       <wd-textarea v-model="description" placeholder="请描述商品详情..." style="margin-top: 12px" />
 
@@ -172,9 +118,7 @@ function goBack() {
         <view style="display: flex; flex-wrap: wrap; gap: 8px">
           <view v-for="(img, idx) in images" :key="idx" style="position: relative">
             <wd-img :src="img" width="80" height="80" radius="4" />
-            <wd-icon
-              name="close"
-              style="
+            <wd-icon name="close" style="
                 position: absolute;
                 top: -4px;
                 right: -4px;
@@ -182,12 +126,9 @@ function goBack() {
                 color: #fff;
                 border-radius: 50%;
                 padding: 2px;
-              "
-              @click="removeImage(idx)"
-            />
+              " @click="removeImage(idx)" />
           </view>
-          <view
-            style="
+          <view style="
               width: 80px;
               height: 80px;
               border: 1px dashed #ccc;
@@ -195,9 +136,7 @@ function goBack() {
               align-items: center;
               justify-content: center;
               border-radius: 4px;
-            "
-            @click="onUpload"
-          >
+            " @click="onUpload">
             <wd-icon name="add" size="24px" style="color: #999" />
           </view>
         </view>

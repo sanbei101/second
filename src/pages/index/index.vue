@@ -2,15 +2,12 @@
 import { ref, computed } from "vue";
 import { onShow } from "@dcloudio/uni-app";
 import { useGoodsStore, categories } from "@/stores/goods";
-import { useUserStore } from "@/stores/user";
 
 const goodsStore = useGoodsStore();
-const userStore = useUserStore();
 
 const keyword = ref("");
 const activeCategory = ref("全部");
 const priceRange = ref<[number, number]>([0, 10000]);
-const showFilter = ref(false);
 const loading = ref(false);
 
 const filteredGoods = computed(() => {
@@ -60,17 +57,12 @@ onShow(() => {
       </view>
 
       <wd-card
-        v-for="item in filteredGoods"
-        :key="item.id"
-        :title="item.title"
-        style="margin-bottom: 12px"
+        v-for="item in filteredGoods" :key="item.id" :title="item.title" style="margin-bottom: 12px"
         @click="goDetail(item.id)"
       >
         <view style="display: flex; gap: 12px">
           <wd-img
-            :src="item.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'"
-            width="80"
-            height="80"
+            :src="item.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'" width="80" height="80"
             radius="4"
           />
           <view style="flex: 1">
