@@ -1,13 +1,14 @@
 {
   "name": "second",
-  "type": "module",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "unh dev",
     "build": "unh build",
     "build:wx": "unh build wx",
     "about": "unh info",
+    "fmt": "oxfmt",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
@@ -48,6 +49,7 @@
     "@vue/runtime-core": "^3.4.21",
     "@vue/tsconfig": "^0.9.1",
     "miniprogram-api-typings": "^5.1.2",
+    "oxfmt": "^0.45.0",
     "sass": "1.99.0",
     "typescript": "5.9.3",
     "vite": "6.4.2",

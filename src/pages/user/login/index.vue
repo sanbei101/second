@@ -1,43 +1,43 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useUserStore, type UserRole } from '@/stores/user'
+import { ref } from "vue";
+import { useUserStore, type UserRole } from "@/stores/user";
 
-const userStore = useUserStore()
-const phone = ref('')
-const password = ref('')
-const loading = ref(false)
+const userStore = useUserStore();
+const phone = ref("");
+const password = ref("");
+const loading = ref(false);
 
 function onLogin() {
   if (!phone.value || !password.value) {
-    uni.showToast({ title: '请输入手机号和密码', icon: 'none' })
-    return
+    uni.showToast({ title: "请输入手机号和密码", icon: "none" });
+    return;
   }
-  loading.value = true
-  const ok = userStore.login(phone.value, password.value)
-  loading.value = false
+  loading.value = true;
+  const ok = userStore.login(phone.value, password.value);
+  loading.value = false;
   if (ok) {
-    uni.showToast({ title: '登录成功', icon: 'success' })
+    uni.showToast({ title: "登录成功", icon: "success" });
     setTimeout(() => {
-      uni.switchTab({ url: '/pages/my/index' })
-    }, 800)
+      uni.switchTab({ url: "/pages/my/index" });
+    }, 800);
   } else {
-    uni.showToast({ title: '手机号或密码错误', icon: 'none' })
+    uni.showToast({ title: "手机号或密码错误", icon: "none" });
   }
 }
 
 function onWxLogin() {
-  userStore.wxLogin('buyer')
-  uni.showToast({ title: '微信登录成功', icon: 'success' })
+  userStore.wxLogin("buyer");
+  uni.showToast({ title: "微信登录成功", icon: "success" });
   setTimeout(() => {
-    uni.switchTab({ url: '/pages/my/index' })
-  }, 800)
+    uni.switchTab({ url: "/pages/my/index" });
+  }, 800);
 }
 
 function goRegister() {
-  uni.navigateTo({ url: '/pages/user/register/index' })
+  uni.navigateTo({ url: "/pages/user/register/index" });
 }
 function goBack() {
-  uni.navigateBack()
+  uni.navigateBack();
 }
 </script>
 
@@ -45,10 +45,10 @@ function goBack() {
   <view>
     <wd-navbar title="登录" safe-area-inset-top fixed placeholder left-arrow @click-left="goBack" />
 
-    <view style="padding: 24px 16px;">
-      <view style="text-align: center; margin-bottom: 32px;">
-        <wd-text text="校园二手交易平台" style="font-size: 22px; font-weight: bold;" />
-        <wd-text text="安全便捷的校园交易" style="font-size: 14px; color: #999; margin-top: 8px;" />
+    <view style="padding: 24px 16px">
+      <view style="text-align: center; margin-bottom: 32px">
+        <wd-text text="校园二手交易平台" style="font-size: 22px; font-weight: bold" />
+        <wd-text text="安全便捷的校园交易" style="font-size: 14px; color: #999; margin-top: 8px" />
       </view>
 
       <view>
@@ -70,15 +70,18 @@ function goBack() {
           />
         </wd-cell-group>
 
-        <view style="margin-top: 24px;">
+        <view style="margin-top: 24px">
           <wd-button type="primary" block :loading="loading" @click="onLogin">登录</wd-button>
         </view>
 
-        <view style="margin-top: 16px; text-align: center;">
+        <view style="margin-top: 16px; text-align: center">
           <wd-button type="success" block @click="onWxLogin">微信一键登录</wd-button>
         </view>
 
-        <view style="margin-top: 16px; text-align: center; color: #4D80F0; font-size: 14px;" @click="goRegister">
+        <view
+          style="margin-top: 16px; text-align: center; color: #4d80f0; font-size: 14px"
+          @click="goRegister"
+        >
           还没有账号？立即注册
         </view>
       </view>
