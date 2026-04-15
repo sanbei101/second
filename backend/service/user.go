@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/phuslu/log"
 	"gorm.io/gorm"
 
 	"github.com/sanbei101/second/middleware"
@@ -22,6 +23,7 @@ func NewUserService(db *gorm.DB) *UserService {
 func (s *UserService) Register(phone, password, nickname string, role model.UserRole) (*model.User, string, error) {
 	var exist model.User
 	if err := s.db.Where("phone = ?", phone).First(&exist).Error; err == nil {
+		log.Warn().Str("phone", phone).Msg("register failed: phone already exists")
 		return nil, "", errors.New("phone already registered")
 	}
 
@@ -33,20 +35,30 @@ func (s *UserService) Register(phone, password, nickname string, role model.User
 		Avatar:   "https://img.yzcdn.cn/vant/cat.jpeg",
 	}
 	if err := s.db.Create(&user).Error; err != nil {
+		log.Error().Err(err).Str("phone", phone).Msg("register failed: db error")
 		return nil, "", err
 	}
 
+	log.Info().Uint("user_id", user.ID).Str("phone", phone).Msg("user registered")
 	token, err := s.generateToken(&user)
+	if err != nil {
+		log.Error().Err(err).Uint("user_id", user.ID).Msg("generate token failed")
+	}
 	return &user, token, err
 }
 
 func (s *UserService) Login(phone, password string) (*model.User, string, error) {
 	var user model.User
 	if err := s.db.Where("phone = ? AND password = ?", phone, password).First(&user).Error; err != nil {
+		log.Warn().Str("phone", phone).Msg("login failed: invalid credentials")
 		return nil, "", errors.New("invalid phone or password")
 	}
 
+	log.Info().Uint("user_id", user.ID).Str("phone", phone).Msg("user logged in")
 	token, err := s.generateToken(&user)
+	if err != nil {
+		log.Error().Err(err).Uint("user_id", user.ID).Msg("generate token failed")
+	}
 	return &user, token, err
 }
 
@@ -54,6 +66,7 @@ func (s *UserService) WxLogin(openid string, role model.UserRole) (*model.User, 
 	var user model.User
 	err := s.db.Where("openid = ?", openid).First(&user).Error
 	if err == nil {
+		log.Info().Uint("user_id", user.ID).Str("openid", openid).Msg("wx login success")
 		token, err := s.generateToken(&user)
 		return &user, token, err
 	}
@@ -65,9 +78,11 @@ func (s *UserService) WxLogin(openid string, role model.UserRole) (*model.User, 
 		Avatar:   "https://img.yzcdn.cn/vant/cat.jpeg",
 	}
 	if err := s.db.Create(&user).Error; err != nil {
+		log.Error().Err(err).Str("openid", openid).Msg("wx register failed")
 		return nil, "", err
 	}
 
+	log.Info().Uint("user_id", user.ID).Str("openid", openid).Msg("wx user registered")
 	token, err := s.generateToken(&user)
 	return &user, token, err
 }
@@ -75,6 +90,7 @@ func (s *UserService) WxLogin(openid string, role model.UserRole) (*model.User, 
 func (s *UserService) GetByID(id uint) (*model.User, error) {
 	var user model.User
 	if err := s.db.First(&user, id).Error; err != nil {
+		log.Warn().Err(err).Uint("user_id", id).Msg("get user failed")
 		return nil, err
 	}
 	return &user, nil
@@ -91,7 +107,12 @@ func (s *UserService) Update(id uint, nickname, avatar, phone string) error {
 	if phone != "" {
 		updates["phone"] = phone
 	}
-	return s.db.Model(&model.User{}).Where("id = ?", id).Updates(updates).Error
+	if err := s.db.Model(&model.User{}).Where("id = ?", id).Updates(updates).Error; err != nil {
+		log.Error().Err(err).Uint("user_id", id).Msg("update user failed")
+		return err
+	}
+	log.Info().Uint("user_id", id).Msg("user updated")
+	return nil
 }
 
 func (s *UserService) generateToken(user *model.User) (string, error) {
