@@ -18,4 +18,11 @@ export default defineConfig({
     }),
     Uni(),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ["legacy-js-api"],
+      },
+    },
+  },
 });
