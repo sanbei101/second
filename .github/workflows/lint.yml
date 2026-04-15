@@ -11,6 +11,11 @@ jobs:
     steps:  
       - uses: actions/checkout@v6
 
+      - uses: pnpm/action-setup@v6
+        with:
+          version: latest
+          cache: true
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -26,6 +31,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - uses: pnpm/action-setup@v6
+        with:
+          version: latest
+          cache: true
+          
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
