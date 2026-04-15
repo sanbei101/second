@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/phuslu/log"
 
 	"github.com/sanbei101/second/middleware"
 	"github.com/sanbei101/second/model"
@@ -52,6 +53,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 		return
 	}
 
+	log.Info().Str("phone", req.Phone).Msg("user registered")
 	c.JSON(http.StatusOK, gin.H{"user": user, "token": token})
 }
 
@@ -64,10 +66,12 @@ func (h *UserHandler) Login(c *gin.Context) {
 
 	user, token, err := h.svc.Login(req.Phone, req.Password)
 	if err != nil {
+		log.Warn().Str("phone", req.Phone).Msg("login failed")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
+	log.Info().Str("phone", req.Phone).Msg("user logged in")
 	c.JSON(http.StatusOK, gin.H{"user": user, "token": token})
 }
 

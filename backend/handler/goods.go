@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/phuslu/log"
 
 	"github.com/sanbei101/second/middleware"
 	"github.com/sanbei101/second/model"
@@ -56,6 +57,7 @@ func (h *GoodsHandler) Create(c *gin.Context) {
 		return
 	}
 
+	log.Info().Str("title", goods.Title).Uint("seller_id", goods.SellerID).Msg("goods created")
 	c.JSON(http.StatusOK, gin.H{"goods": goods})
 }
 

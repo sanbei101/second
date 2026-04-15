@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/phuslu/log"
 
 	"github.com/sanbei101/second/middleware"
 	"github.com/sanbei101/second/model"
@@ -46,6 +47,7 @@ func (h *OrderHandler) Create(c *gin.Context) {
 		return
 	}
 
+	log.Info().Uint("order_id", order.ID).Uint("buyer_id", buyerID).Msg("order created")
 	c.JSON(http.StatusOK, gin.H{"order": order})
 }
 
