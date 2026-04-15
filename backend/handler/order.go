@@ -22,13 +22,13 @@ func NewOrderHandler(svc *service.OrderService, goodsSvc *service.GoodsService) 
 }
 
 type CreateOrderReq struct {
-	GoodsID uint   `json:"goodsId" binding:"required"`
+	GoodsID uint   `json:"goodsId" validate:"required"`
 	Remark  string `json:"remark"`
 }
 
 func (h *OrderHandler) Create(c *gin.Context) {
 	var req CreateOrderReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := ValidateAndParseJSON(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -88,7 +88,7 @@ func (h *OrderHandler) GetByID(c *gin.Context) {
 }
 
 type UpdateStatusReq struct {
-	Status model.OrderStatus `json:"status" binding:"required"`
+	Status model.OrderStatus `json:"status" validate:"required"`
 }
 
 func (h *OrderHandler) UpdateStatus(c *gin.Context) {
@@ -99,7 +99,7 @@ func (h *OrderHandler) UpdateStatus(c *gin.Context) {
 	}
 
 	var req UpdateStatusReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := ValidateAndParseJSON(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

@@ -26,7 +26,6 @@ func (s *UserService) Register(phone, password, nickname string) (*model.User, s
 		log.Warn().Str("phone", phone).Msg("register failed: phone already exists")
 		return nil, "", errors.New("phone already registered")
 	}
-
 	user := model.User{
 		Phone:    phone,
 		Password: password,

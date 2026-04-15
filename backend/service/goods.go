@@ -36,7 +36,7 @@ func (s *GoodsService) GetByID(id uint) (*model.Goods, error) {
 	return &goods, nil
 }
 
-func (s *GoodsService) List(keyword, category string, minPrice, maxPrice *float64) ([]model.Goods, error) {
+func (s *GoodsService) List(keyword, category string, minPrice, maxPrice float64) ([]model.Goods, error) {
 	query := s.db.Model(&model.Goods{}).Preload("Seller").Where("status = ?", model.GoodsOnSale)
 
 	if keyword != "" {
@@ -45,11 +45,11 @@ func (s *GoodsService) List(keyword, category string, minPrice, maxPrice *float6
 	if category != "" && category != "全部" {
 		query = query.Where("category = ?", category)
 	}
-	if minPrice != nil {
-		query = query.Where("price >= ?", *minPrice)
+	if minPrice != 0 {
+		query = query.Where("price >= ?", minPrice)
 	}
-	if maxPrice != nil {
-		query = query.Where("price <= ?", *maxPrice)
+	if maxPrice != 0 {
+		query = query.Where("price <= ?", maxPrice)
 	}
 
 	var goods []model.Goods

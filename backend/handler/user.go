@@ -25,17 +25,17 @@ type RegisterReq struct {
 }
 
 type LoginReq struct {
-	Phone    string `json:"phone" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Phone    string `json:"phone" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 type WxLoginReq struct {
-	Openid string `json:"openid" binding:"required"`
+	Openid string `json:"openid" validate:"required"`
 }
 
 func (h *UserHandler) Register(c *gin.Context) {
 	var req RegisterReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := ValidateAndParseJSON(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -52,7 +52,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 
 func (h *UserHandler) Login(c *gin.Context) {
 	var req LoginReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := ValidateAndParseJSON(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -70,7 +70,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 
 func (h *UserHandler) WxLogin(c *gin.Context) {
 	var req WxLoginReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := ValidateAndParseJSON(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -103,7 +103,7 @@ type UpdateProfileReq struct {
 
 func (h *UserHandler) UpdateProfile(c *gin.Context) {
 	var req UpdateProfileReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := ValidateAndParseJSON(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

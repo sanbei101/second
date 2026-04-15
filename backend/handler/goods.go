@@ -22,18 +22,18 @@ func NewGoodsHandler(svc *service.GoodsService) *GoodsHandler {
 }
 
 type CreateGoodsReq struct {
-	Title         string   `json:"title" binding:"required"`
+	Title         string   `json:"title" validate:"required"`
 	Description   string   `json:"description"`
-	Price         float64  `json:"price" binding:"required"`
+	Price         float64  `json:"price" validate:"required"`
 	OriginalPrice float64  `json:"originalPrice"`
-	Category      string   `json:"category" binding:"required"`
-	Condition     string   `json:"condition" binding:"required"`
+	Category      string   `json:"category" validate:"required"`
+	Condition     string   `json:"condition" validate:"required"`
 	Images        []string `json:"images"`
 }
 
 func (h *GoodsHandler) Create(c *gin.Context) {
 	var req CreateGoodsReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := ValidateAndParseJSON(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -61,21 +61,21 @@ func (h *GoodsHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"goods": goods})
 }
 
+type ListGoodsReq struct {
+	Keyword  string  `query:"keyword"`
+	Category string  `query:"category"`
+	MinPrice float64 `query:"minPrice"`
+	MaxPrice float64 `query:"maxPrice"`
+}
+
 func (h *GoodsHandler) List(c *gin.Context) {
-	keyword := c.Query("keyword")
-	category := c.Query("category")
-	var minPrice, maxPrice *float64
-
-	if mp := c.Query("minPrice"); mp != "" {
-		v, _ := strconv.ParseFloat(mp, 64)
-		minPrice = &v
+	var req ListGoodsReq
+	if err := ValidateAndParseQuery(c, &req); err != nil {
+		log.Warn().Err(err).Msg("invalid query parameters")
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	if mp := c.Query("maxPrice"); mp != "" {
-		v, _ := strconv.ParseFloat(mp, 64)
-		maxPrice = &v
-	}
-
-	goods, err := h.svc.List(keyword, category, minPrice, maxPrice)
+	goods, err := h.svc.List(req.Keyword, req.Category, req.MinPrice, req.MaxPrice)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -138,7 +138,7 @@ func (h *GoodsHandler) Update(c *gin.Context) {
 	}
 
 	var req CreateGoodsReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := ValidateAndParseJSON(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
