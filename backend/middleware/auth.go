@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/phuslu/log"
 )
 
 var JWTSecret = []byte("campus-secondhand-secret-key")
@@ -23,21 +23,20 @@ func AuthRequired() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
-		parts := strings.SplitN(authHeader, " ", 2)
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization format"})
+		if authHeader[:7] != "Bearer " {
+			log.Warn().Str("authHeader", authHeader).Msg("invalid authorization header format")
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization header format"})
 			c.Abort()
 			return
 		}
-
-		tokenStr := parts[1]
+		tokenStr := authHeader[7:]
 		claims := &Claims{}
 		token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (any, error) {
 			return JWTSecret, nil
 		})
 
 		if err != nil || !token.Valid {
+			log.Warn().Str("token", tokenStr).Msg("invalid token")
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
 			c.Abort()
 			return
