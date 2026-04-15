@@ -144,7 +144,7 @@ func (h *GoodsHandler) Update(c *gin.Context) {
 	}
 
 	imagesJSON, _ := json.Marshal(req.Images)
-	updates := map[string]interface{}{
+	updates := map[string]any{
 		"title":          req.Title,
 		"description":    req.Description,
 		"price":          req.Price,

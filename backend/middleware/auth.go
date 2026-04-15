@@ -19,12 +19,13 @@ func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
+			log.Warn().Msg("missing authorization header")
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing authorization header"})
 			c.Abort()
 			return
 		}
 		if authHeader[:7] != "Bearer " {
-			log.Warn().Str("authHeader", authHeader).Msg("invalid authorization header format")
+			log.Warn().Str("token", authHeader).Msg("invalid authorization header format")
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization header format"})
 			c.Abort()
 			return
@@ -48,6 +49,10 @@ func AuthRequired() gin.HandlerFunc {
 }
 
 func GetUserID(c *gin.Context) uint {
-	id, _ := c.Get("userID")
+	id, exist := c.Get("userID")
+	if !exist {
+		log.Error().Msg("userID not found in context")
+		return 0
+	}
 	return id.(uint)
 }

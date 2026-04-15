@@ -15,6 +15,7 @@ import (
 )
 
 func main() {
+
 	log.DefaultLogger = log.Logger{
 		Level:  log.InfoLevel,
 		Writer: &log.IOWriter{Writer: os.Stderr},
@@ -31,6 +32,11 @@ func main() {
 	}
 
 	log.Info().Msg("database connected and migrated")
+
+	if len(os.Args) > 1 && os.Args[1] == "migrate" {
+		Migrate(db)
+		return
+	}
 
 	userSvc := service.NewUserService(db)
 	goodsSvc := service.NewGoodsService(db)
