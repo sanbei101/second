@@ -204,9 +204,11 @@ function goBack() {
       </view>
 
       <view style="margin-top: 24px">
-        <wd-button type="primary" block @click="submit">{{
-          isEdit ? "保存修改" : "立即发布"
-        }}</wd-button>
+        <wd-button type="primary" block @click="submit">
+          {{
+            isEdit ? "保存修改" : "立即发布"
+          }}
+        </wd-button>
       </view>
     </view>
   </view>

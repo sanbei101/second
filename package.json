@@ -9,7 +9,9 @@
     "build:wx": "unh build wx",
     "about": "unh info",
     "fmt": "oxfmt",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-5000720260410001",
@@ -35,6 +37,7 @@
     "vue-router": "4.5.1"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^8.2.0",
     "@dcloudio/types": "^3.4.8",
     "@dcloudio/uni-automator": "3.0.0-5000720260410001",
     "@dcloudio/uni-cli-shared": "3.0.0-5000720260410001",
@@ -48,6 +51,7 @@
     "@uni-helper/vite-plugin-uni-components": "^0.2.10",
     "@vue/runtime-core": "^3.4.21",
     "@vue/tsconfig": "^0.9.1",
+    "eslint": "^10.2.0",
     "miniprogram-api-typings": "^5.1.2",
     "oxfmt": "^0.45.0",
     "sass": "1.99.0",

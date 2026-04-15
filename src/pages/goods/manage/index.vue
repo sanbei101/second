@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { onShow } from "@dcloudio/uni-app";
-import { useGoodsStore, type Goods } from "@/stores/goods";
+import { computed } from "vue";
+import { useGoodsStore  } from "@/stores/goods";
+import type {Goods} from "@/stores/goods";
 import { useUserStore } from "@/stores/user";
 
 const goodsStore = useGoodsStore();

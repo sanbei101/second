@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { onShow } from "@dcloudio/uni-app";
-import { useUserStore, type UserRole } from "@/stores/user";
+import { useUserStore  } from "@/stores/user";
+import type {UserRole} from "@/stores/user";
 
 const userStore = useUserStore();
 const user = computed(() => userStore.currentUser);

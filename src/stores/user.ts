@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 
 export type UserRole = "buyer" | "seller" | "admin";
 
-export interface User {
+export type User = {
   id: string;
   openid: string;
   nickname: string;
@@ -86,7 +86,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   function wxLogin(role: UserRole = "buyer") {
-    const openid = "wx_" + Date.now();
+    const openid = `wx_${  Date.now()}`;
     const exist = users.value.find((u) => u.openid === openid);
     if (exist) {
       currentUser.value = exist;
@@ -94,9 +94,9 @@ export const useUserStore = defineStore("user", () => {
       return true;
     }
     const newUser: User = {
-      id: "u_" + Date.now(),
+      id: `u_${  Date.now()}`,
       openid,
-      nickname: "微信用户" + Math.floor(Math.random() * 10000),
+      nickname: `微信用户${  Math.floor(Math.random() * 10000)}`,
       avatar: "https://img.yzcdn.cn/vant/cat.jpeg",
       phone: "",
       role,
@@ -113,9 +113,9 @@ export const useUserStore = defineStore("user", () => {
   function register(phone: string, password: string, role: UserRole, nickname: string) {
     if (users.value.some((u) => u.phone === phone)) return false;
     const newUser: User = {
-      id: "u_" + Date.now(),
-      openid: "wx_" + Date.now(),
-      nickname: nickname || "用户" + Math.floor(Math.random() * 10000),
+      id: `u_${  Date.now()}`,
+      openid: `wx_${  Date.now()}`,
+      nickname: nickname || `用户${  Math.floor(Math.random() * 10000)}`,
       avatar: "https://img.yzcdn.cn/vant/cat.jpeg",
       phone,
       role,

@@ -4,7 +4,7 @@ import type { Goods } from "./goods";
 
 export type OrderStatus = "pending" | "confirmed" | "cancelled" | "completed";
 
-export interface Order {
+export type Order = {
   id: string;
   goodsId: string;
   goods?: Goods;
@@ -32,7 +32,7 @@ export const useOrderStore = defineStore("order", () => {
 
   function create(goodsId: string, buyerId: string, sellerId: string, remark: string = "") {
     const order: Order = {
-      id: "o_" + Date.now(),
+      id: `o_${  Date.now()}`,
       goodsId,
       buyerId,
       sellerId,

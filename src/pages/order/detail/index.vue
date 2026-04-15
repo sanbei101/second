@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { useOrderStore, type OrderStatus } from "@/stores/order";
+import { useOrderStore  } from "@/stores/order";
+import type {OrderStatus} from "@/stores/order";
 import { useUserStore } from "@/stores/user";
 import { useGoodsStore } from "@/stores/goods";
 
@@ -49,8 +50,10 @@ function goBack() {
     <view style="padding: 16px; background: #fff">
       <view style="font-size: 15px; font-weight: bold; margin-bottom: 12px">商品信息</view>
       <view style="display: flex; gap: 12px">
-        <wd-img :src="goods.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'" width="80" height="80"
-          radius="4" />
+        <wd-img
+          :src="goods.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'" width="80" height="80"
+          radius="4"
+        />
         <view>
           <view style="font-size: 15px">{{ goods.title }}</view>
           <text style="color: #f44; font-size: 16px; font-weight: bold; margin-top: 4px">¥{{ goods.price }}</text>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { onShow } from "@dcloudio/uni-app";
-import { useUserStore, type UserRole } from "@/stores/user";
+import { useUserStore  } from "@/stores/user";
+import type {UserRole} from "@/stores/user";
 
 const userStore = useUserStore();
 const users = computed(() => userStore.users);
@@ -39,9 +39,11 @@ function goBack() {
           <wd-cell title="注册时间" :value="new Date(u.createdAt).toLocaleDateString()" />
           <wd-cell title="当前角色">
             <template #value>
-              <wd-tag type="primary">{{
-                u.role === "admin" ? "管理员" : u.role === "seller" ? "卖家" : "买家"
-              }}</wd-tag>
+              <wd-tag type="primary">
+                {{
+                  u.role === "admin" ? "管理员" : u.role === "seller" ? "卖家" : "买家"
+                }}
+              </wd-tag>
             </template>
           </wd-cell>
         </wd-cell-group>

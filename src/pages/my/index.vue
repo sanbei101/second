@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { onShow } from "@dcloudio/uni-app";
 import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();

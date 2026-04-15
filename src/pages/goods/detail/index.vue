@@ -69,22 +69,24 @@ function goBack() {
     <view style="padding: 16px; background: #fff">
       <view style="display: flex; align-items: baseline; gap: 8px">
         <text style="color: #f44; font-size: 24px; font-weight: bold">¥{{ goods.price }}</text>
-        <view style="font-size: 13px; color: #999; text-decoration: line-through"
-          >原价 ¥{{ goods.originalPrice }}</view
-        >
+        <view style="font-size: 13px; color: #999; text-decoration: line-through">
+          原价 ¥{{ goods.originalPrice }}
+        </view>
       </view>
       <view style="font-size: 18px; font-weight: bold; margin-top: 8px">{{ goods.title }}</view>
       <view style="display: flex; gap: 8px; margin-top: 8px">
         <wd-tag type="primary">{{ goods.category }}</wd-tag>
         <wd-tag type="success">{{ goods.condition }}</wd-tag>
       </view>
-      <view style="font-size: 14px; color: #666; margin-top: 12px; line-height: 1.6">{{
-        goods.description
-      }}</view>
-      <view style="font-size: 12px; color: #999; margin-top: 12px"
-        >浏览 {{ goods.viewCount }} · 发布于
-        {{ new Date(goods.createdAt).toLocaleDateString() }}</view
-      >
+      <view style="font-size: 14px; color: #666; margin-top: 12px; line-height: 1.6">
+        {{
+          goods.description
+        }}
+      </view>
+      <view style="font-size: 12px; color: #999; margin-top: 12px">
+        浏览 {{ goods.viewCount }} · 发布于
+        {{ new Date(goods.createdAt).toLocaleDateString() }}
+      </view>
     </view>
 
     <wd-divider />
@@ -117,12 +119,12 @@ function goBack() {
       "
     >
       <wd-button size="large" style="flex: 1" @click="goChat">联系卖家</wd-button>
-      <wd-button v-if="canBuy" type="primary" size="large" style="flex: 2" @click="openBuy"
-        >立即购买</wd-button
-      >
-      <wd-button v-else-if="isOwner" size="large" style="flex: 2" disabled
-        >自己发布的商品</wd-button
-      >
+      <wd-button v-if="canBuy" type="primary" size="large" style="flex: 2" @click="openBuy">
+        立即购买
+      </wd-button>
+      <wd-button v-else-if="isOwner" size="large" style="flex: 2" disabled>
+        自己发布的商品
+      </wd-button>
       <wd-button v-else size="large" style="flex: 2" disabled>不可购买</wd-button>
     </view>
 
@@ -131,9 +133,9 @@ function goBack() {
       position="bottom"
       :style="{ padding: '16px', paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }"
     >
-      <view style="font-size: 16px; font-weight: bold; margin-bottom: 12px; text-align: center"
-        >确认购买</view
-      >
+      <view style="font-size: 16px; font-weight: bold; margin-bottom: 12px; text-align: center">
+        确认购买
+      </view>
       <wd-textarea v-model="remark" placeholder="给卖家留言（可选）" />
       <view style="margin-top: 16px; display: flex; gap: 12px">
         <wd-button block @click="showBuyPopup = false">取消</wd-button>

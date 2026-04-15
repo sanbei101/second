@@ -67,12 +67,16 @@ function goDetail(id: string) {
             margin-bottom: 8px;
           "
         >
-          <wd-tag :type="statusType[item.status] as any" size="small">{{
-            statusText[item.status]
-          }}</wd-tag>
-          <view style="font-size: 12px; color: #999">{{
-            new Date(item.createdAt).toLocaleString()
-          }}</view>
+          <wd-tag :type="statusType[item.status] as any" size="small">
+            {{
+              statusText[item.status]
+            }}
+          </wd-tag>
+          <view style="font-size: 12px; color: #999">
+            {{
+              new Date(item.createdAt).toLocaleString()
+            }}
+          </view>
         </view>
 
         <view style="display: flex; gap: 12px">
@@ -84,9 +88,9 @@ function goDetail(id: string) {
           />
           <view style="flex: 1">
             <view style="font-size: 15px; font-weight: bold">{{ item.goods?.title }}</view>
-            <text style="color: #f44; font-size: 15px; margin-top: 4px"
-              >¥{{ item.goods?.price || 0 }}</text
-            >
+            <text style="color: #f44; font-size: 15px; margin-top: 4px">
+              ¥{{ item.goods?.price || 0 }}
+            </text>
           </view>
         </view>
       </wd-card>

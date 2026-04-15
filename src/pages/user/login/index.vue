@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useUserStore, type UserRole } from "@/stores/user";
+import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
 const phone = ref("");

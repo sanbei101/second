@@ -4,7 +4,7 @@ import type { User } from "./user";
 
 export type GoodsStatus = "on_sale" | "sold" | "off_shelf";
 
-export interface Goods {
+export type Goods = {
   id: string;
   title: string;
   description: string;
@@ -125,7 +125,7 @@ export const useGoodsStore = defineStore("goods", () => {
   function add(goods: Omit<Goods, "id" | "createdAt" | "viewCount" | "status">) {
     const newGoods: Goods = {
       ...goods,
-      id: "g_" + Date.now(),
+      id: `g_${  Date.now()}`,
       status: "on_sale",
       viewCount: 0,
       createdAt: new Date().toISOString(),
