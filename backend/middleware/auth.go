@@ -11,8 +11,7 @@ import (
 var JWTSecret = []byte("campus-secondhand-secret-key")
 
 type Claims struct {
-	UserID uint   `json:"user_id"`
-	Role   string `json:"role"`
+	UserID uint `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
@@ -34,7 +33,7 @@ func AuthRequired() gin.HandlerFunc {
 
 		tokenStr := parts[1]
 		claims := &Claims{}
-		token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (any, error) {
 			return JWTSecret, nil
 		})
 
@@ -45,7 +44,6 @@ func AuthRequired() gin.HandlerFunc {
 		}
 
 		c.Set("userID", claims.UserID)
-		c.Set("role", claims.Role)
 		c.Next()
 	}
 }
@@ -53,9 +51,4 @@ func AuthRequired() gin.HandlerFunc {
 func GetUserID(c *gin.Context) uint {
 	id, _ := c.Get("userID")
 	return id.(uint)
-}
-
-func GetRole(c *gin.Context) string {
-	role, _ := c.Get("role")
-	return role.(string)
 }

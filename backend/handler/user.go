@@ -7,7 +7,6 @@ import (
 	"github.com/phuslu/log"
 
 	"github.com/sanbei101/second/middleware"
-	"github.com/sanbei101/second/model"
 	"github.com/sanbei101/second/service"
 )
 
@@ -20,10 +19,9 @@ func NewUserHandler(svc *service.UserService) *UserHandler {
 }
 
 type RegisterReq struct {
-	Phone    string         `json:"phone" binding:"required"`
-	Password string         `json:"password" binding:"required"`
-	Nickname string         `json:"nickname"`
-	Role     model.UserRole `json:"role" binding:"required"`
+	Phone    string `json:"phone" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Nickname string `json:"nickname"`
 }
 
 type LoginReq struct {
@@ -32,8 +30,7 @@ type LoginReq struct {
 }
 
 type WxLoginReq struct {
-	Openid string         `json:"openid" binding:"required"`
-	Role   model.UserRole `json:"role"`
+	Openid string `json:"openid" binding:"required"`
 }
 
 func (h *UserHandler) Register(c *gin.Context) {
@@ -43,11 +40,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 		return
 	}
 
-	if req.Role == "" {
-		req.Role = model.RoleBuyer
-	}
-
-	user, token, err := h.svc.Register(req.Phone, req.Password, req.Nickname, req.Role)
+	user, token, err := h.svc.Register(req.Phone, req.Password, req.Nickname)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -82,11 +75,7 @@ func (h *UserHandler) WxLogin(c *gin.Context) {
 		return
 	}
 
-	if req.Role == "" {
-		req.Role = model.RoleBuyer
-	}
-
-	user, token, err := h.svc.WxLogin(req.Openid, req.Role)
+	user, token, err := h.svc.WxLogin(req.Openid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

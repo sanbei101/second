@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"net/http"
 	"strconv"
 
@@ -132,8 +132,7 @@ func (h *GoodsHandler) Update(c *gin.Context) {
 	}
 
 	userID := middleware.GetUserID(c)
-	role := middleware.GetRole(c)
-	if goods.SellerID != userID && role != string(model.RoleAdmin) {
+	if goods.SellerID != userID {
 		c.JSON(http.StatusForbidden, gin.H{"error": "not authorized"})
 		return
 	}
@@ -177,8 +176,7 @@ func (h *GoodsHandler) Delete(c *gin.Context) {
 	}
 
 	userID := middleware.GetUserID(c)
-	role := middleware.GetRole(c)
-	if goods.SellerID != userID && role != string(model.RoleAdmin) {
+	if goods.SellerID != userID {
 		c.JSON(http.StatusForbidden, gin.H{"error": "not authorized"})
 		return
 	}

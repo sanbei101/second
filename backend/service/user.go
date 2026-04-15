@@ -20,7 +20,7 @@ func NewUserService(db *gorm.DB) *UserService {
 	return &UserService{db: db}
 }
 
-func (s *UserService) Register(phone, password, nickname string, role model.UserRole) (*model.User, string, error) {
+func (s *UserService) Register(phone, password, nickname string) (*model.User, string, error) {
 	var exist model.User
 	if err := s.db.Where("phone = ?", phone).First(&exist).Error; err == nil {
 		log.Warn().Str("phone", phone).Msg("register failed: phone already exists")
@@ -31,7 +31,6 @@ func (s *UserService) Register(phone, password, nickname string, role model.User
 		Phone:    phone,
 		Password: password,
 		Nickname: nickname,
-		Role:     role,
 		Avatar:   "https://img.yzcdn.cn/vant/cat.jpeg",
 	}
 	if err := s.db.Create(&user).Error; err != nil {
@@ -62,7 +61,7 @@ func (s *UserService) Login(phone, password string) (*model.User, string, error)
 	return &user, token, err
 }
 
-func (s *UserService) WxLogin(openid string, role model.UserRole) (*model.User, string, error) {
+func (s *UserService) WxLogin(openid string) (*model.User, string, error) {
 	var user model.User
 	err := s.db.Where("openid = ?", openid).First(&user).Error
 	if err == nil {
@@ -74,7 +73,6 @@ func (s *UserService) WxLogin(openid string, role model.UserRole) (*model.User, 
 	user = model.User{
 		Openid:   openid,
 		Nickname: "微信用户",
-		Role:     role,
 		Avatar:   "https://img.yzcdn.cn/vant/cat.jpeg",
 	}
 	if err := s.db.Create(&user).Error; err != nil {
@@ -118,7 +116,6 @@ func (s *UserService) Update(id uint, nickname, avatar, phone string) error {
 func (s *UserService) generateToken(user *model.User) (string, error) {
 	claims := middleware.Claims{
 		UserID: user.ID,
-		Role:   string(user.Role),
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
 		},

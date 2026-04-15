@@ -20,7 +20,7 @@ func main() {
 		Writer: &log.IOWriter{Writer: os.Stderr},
 	}
 
-	dsn := "host=localhost user=postgres password=postgres dbname=campus_secondhand port=5432 sslmode=disable"
+	dsn := "host=localhost user=sanbei password=123456 dbname=sanbei port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to connect database")
@@ -49,7 +49,7 @@ func main() {
 	goodsHandler.RegisterRoutes(api, goodsSvc)
 	orderHandler.RegisterRoutes(api, orderSvc, goodsSvc)
 
-	port := 8080
+	port := 8848
 	log.Info().Msgf("server starting on :%d", port)
 	if err := r.Run(fmt.Sprintf(":%d", port)); err != nil {
 		log.Fatal().Err(err).Msg("failed to start server")
