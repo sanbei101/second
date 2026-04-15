@@ -50,7 +50,7 @@ function removeImage(idx: number) {
   images.value.splice(idx, 1);
 }
 
-function submit() {
+async function submit() {
   if (!title.value || !price.value || !category.value) {
     uni.showToast({ title: "请填写完整信息", icon: "none" });
     return;
@@ -67,13 +67,13 @@ function submit() {
     category: category.value,
     condition: condition.value,
     images: images.value,
-    sellerId: userStore.currentUser.id,
+    sellerId: String(userStore.currentUser.id),
   };
   if (isEdit.value) {
-    goodsStore.update(goodsId.value, data);
+    await goodsStore.update(goodsId.value, data);
     uni.showToast({ title: "修改成功", icon: "success" });
   } else {
-    goodsStore.add(data);
+    await goodsStore.add(data);
     uni.showToast({ title: "发布成功", icon: "success" });
     title.value = "";
     description.value = "";

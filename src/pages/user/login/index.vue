@@ -7,26 +7,27 @@ const phone = ref("");
 const password = ref("");
 const loading = ref(false);
 
-function onLogin() {
+async function onLogin() {
   if (!phone.value || !password.value) {
     uni.showToast({ title: "请输入手机号和密码", icon: "none" });
     return;
   }
   loading.value = true;
-  const ok = userStore.login(phone.value, password.value);
-  loading.value = false;
-  if (ok) {
+  try {
+    await userStore.login(phone.value, password.value);
     uni.showToast({ title: "登录成功", icon: "success" });
     setTimeout(() => {
       uni.switchTab({ url: "/pages/my/index" });
     }, 800);
-  } else {
+  } catch {
     uni.showToast({ title: "手机号或密码错误", icon: "none" });
+  } finally {
+    loading.value = false;
   }
 }
 
-function onWxLogin() {
-  userStore.wxLogin("buyer");
+async function onWxLogin() {
+  await userStore.wxLogin();
   uni.showToast({ title: "微信登录成功", icon: "success" });
   setTimeout(() => {
     uni.switchTab({ url: "/pages/my/index" });

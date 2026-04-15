@@ -1,22 +1,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useUserStore } from "@/stores/user";
-import type { UserRole } from "@/stores/user";
 
 const userStore = useUserStore();
 const phone = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 const nickname = ref("");
-const role = ref<UserRole>("buyer");
 const loading = ref(false);
 
-const roleOptions = [
-  { label: "买家", value: "buyer" },
-  { label: "卖家", value: "seller" },
-];
-
-function onRegister() {
+async function onRegister() {
   if (!phone.value || !password.value || !nickname.value) {
     uni.showToast({ title: "请填写完整信息", icon: "none" });
     return;
@@ -26,15 +19,16 @@ function onRegister() {
     return;
   }
   loading.value = true;
-  const ok = userStore.register(phone.value, password.value, role.value, nickname.value);
-  loading.value = false;
-  if (ok) {
+  try {
+    await userStore.register(phone.value, password.value, nickname.value);
     uni.showToast({ title: "注册成功", icon: "success" });
     setTimeout(() => {
       uni.switchTab({ url: "/pages/my/index" });
     }, 800);
-  } else {
+  } catch {
     uni.showToast({ title: "手机号已注册", icon: "none" });
+  } finally {
+    loading.value = false;
   }
 }
 function goBack() {
@@ -78,14 +72,6 @@ function goBack() {
             placeholder="请再次输入密码"
             show-password
             clearable
-          />
-          <wd-picker
-            :value="role"
-            label="身份"
-            label-width="80px"
-            placeholder="请选择身份"
-            :columns="roleOptions"
-            @confirm="role = $event.value"
           />
         </wd-cell-group>
 

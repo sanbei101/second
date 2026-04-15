@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { onShow } from "@dcloudio/uni-app";
 import { useGoodsStore, categories } from "@/stores/goods";
 
 const goodsStore = useGoodsStore();
@@ -12,6 +13,10 @@ function goDetail(id: string) {
   goodsStore.view(id);
   uni.navigateTo({ url: `/pages/goods/detail/index?id=${id}` });
 }
+
+onShow(() => {
+  goodsStore.fetchList();
+});
 </script>
 
 <template>

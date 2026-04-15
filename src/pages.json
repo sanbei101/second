@@ -32,9 +32,6 @@
       "path": "pages/user/profile/index"
     },
     {
-      "path": "pages/user/manage/index"
-    },
-    {
       "path": "pages/order/detail/index"
     }
   ],

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { onShow } from "@dcloudio/uni-app";
 import { useOrderStore } from "@/stores/order";
 import { useUserStore } from "@/stores/user";
-import { useGoodsStore } from "@/stores/goods";
 
 const orderStore = useOrderStore();
 const userStore = useUserStore();
-const goodsStore = useGoodsStore();
 const activeTab = ref(0);
 
 const tabs = ["我购买的", "我卖出的"];
@@ -15,12 +14,9 @@ const list = computed(() => {
   if (!userStore.currentUser) return [];
   const orders =
     activeTab.value === 0
-      ? orderStore.getByBuyer(userStore.currentUser.id)
-      : orderStore.getBySeller(userStore.currentUser.id);
-  return orders.map((o) => ({
-    ...o,
-    goods: goodsStore.getById(o.goodsId),
-  }));
+      ? orderStore.getByBuyer(String(userStore.currentUser.id))
+      : orderStore.getBySeller(String(userStore.currentUser.id));
+  return orders;
 });
 
 const statusText: Record<string, string> = {
@@ -40,13 +36,17 @@ const statusType: Record<string, string> = {
 function goDetail(id: string) {
   uni.navigateTo({ url: `/pages/order/detail/index?id=${id}` });
 }
+
+onShow(() => {
+  orderStore.fetchList(activeTab.value === 0 ? "buyer" : "seller");
+});
 </script>
 
 <template>
   <view>
     <wd-navbar title="我的订单" safe-area-inset-top fixed placeholder />
 
-    <wd-tabs v-model="activeTab">
+    <wd-tabs v-model="activeTab" @change="orderStore.fetchList($event.index === 0 ? 'buyer' : 'seller')">
       <wd-tab v-for="(t, i) in tabs" :key="i" :title="t" />
     </wd-tabs>
 
@@ -77,7 +77,7 @@ function goDetail(id: string) {
 
         <view style="display: flex; gap: 12px">
           <wd-img
-            :src="item.goods?.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'"
+            :src="item.goods?.images?.[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'"
             width="70"
             height="70"
             radius="4"

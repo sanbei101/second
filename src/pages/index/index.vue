@@ -19,11 +19,15 @@ const filteredGoods = computed(() => {
   });
 });
 
-function onSearch() {
+async function onSearch() {
   loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-  }, 300);
+  await goodsStore.fetchList({
+    keyword: keyword.value,
+    category: activeCategory.value,
+    minPrice: priceRange.value[0],
+    maxPrice: priceRange.value[1],
+  });
+  loading.value = false;
 }
 
 function goDetail(id: string) {
@@ -33,10 +37,11 @@ function goDetail(id: string) {
 
 function onCategoryChange(val: string | number) {
   activeCategory.value = val as string;
+  onSearch();
 }
 
 onShow(() => {
-  loading.value = false;
+  onSearch();
 });
 </script>
 

@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { useOrderStore } from "@/stores/order";
-import type { OrderStatus } from "@/stores/order";
+import type { OrderStatus, Order  } from "@/stores/order";
 import { useUserStore } from "@/stores/user";
 import { useGoodsStore } from "@/stores/goods";
+import type { Goods } from "@/stores/goods";
 
 const orderStore = useOrderStore();
 const userStore = useUserStore();
 const goodsStore = useGoodsStore();
 
 const orderId = ref("");
-const order = computed(() => orderStore.getById(orderId.value));
-const goods = computed(() => (order.value ? goodsStore.getById(order.value.goodsId) : null));
-const isSeller = computed(() => order.value?.sellerId === userStore.currentUser?.id);
-const isBuyer = computed(() => order.value?.buyerId === userStore.currentUser?.id);
+const order = ref<Order | null>(null);
+const goods = ref<Goods | null>(null);
+const isSeller = ref(false);
+const isBuyer = ref(false);
 
 const statusText: Record<string, string> = {
   pending: "待卖家确认",
@@ -23,14 +24,26 @@ const statusText: Record<string, string> = {
   completed: "交易已完成",
 };
 
-onLoad((query) => {
+onLoad(async (query) => {
   orderId.value = query?.id || "";
+  if (orderId.value) {
+    order.value = await orderStore.fetchById(orderId.value);
+    goods.value = order.value.goods || null;
+    isSeller.value = order.value.sellerId === String(userStore.currentUser?.id);
+    isBuyer.value = order.value.buyerId === String(userStore.currentUser?.id);
+  }
 });
 
-function changeStatus(status: OrderStatus) {
-  orderStore.updateStatus(orderId.value, status);
+async function changeStatus(status: OrderStatus) {
+  await orderStore.updateStatus(orderId.value, status);
   if (status === "confirmed" || status === "completed") {
-    goodsStore.update(goods.value!.id, { status: "sold" });
+    if (goods.value) {
+      await goodsStore.update(goods.value.id, { status: "sold" });
+      goods.value.status = "sold";
+    }
+  }
+  if (order.value) {
+    order.value.status = status;
   }
   uni.showToast({ title: "操作成功", icon: "success" });
 }

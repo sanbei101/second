@@ -1,33 +1,38 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { onShow } from "@dcloudio/uni-app";
 import { useGoodsStore } from "@/stores/goods";
 import type { Goods } from "@/stores/goods";
 import { useUserStore } from "@/stores/user";
 
 const goodsStore = useGoodsStore();
 const userStore = useUserStore();
-const list = computed(() => goodsStore.getBySeller(userStore.currentUser!.id));
+const list = computed(() => goodsStore.getBySeller(String(userStore.currentUser?.id)));
+
+onShow(() => {
+  goodsStore.fetchList();
+});
 
 function editGoods(item: Goods) {
   uni.navigateTo({ url: `/pages/publish/index?id=${item.id}` });
 }
 
-function deleteGoods(id: string) {
+async function deleteGoods(id: string) {
   uni.showModal({
     title: "确认删除",
     content: "删除后不可恢复",
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm) {
-        goodsStore.remove(id);
+        await goodsStore.remove(id);
         uni.showToast({ title: "已删除", icon: "success" });
       }
     },
   });
 }
 
-function toggleStatus(item: Goods) {
+async function toggleStatus(item: Goods) {
   const next = item.status === "on_sale" ? "off_shelf" : "on_sale";
-  goodsStore.update(item.id, { status: next });
+  await goodsStore.update(item.id, { status: next });
   uni.showToast({ title: next === "on_sale" ? "已上架" : "已下架", icon: "none" });
 }
 function goBack() {

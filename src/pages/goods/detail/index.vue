@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { useGoodsStore } from "@/stores/goods";
 import { useUserStore } from "@/stores/user";
 import { useOrderStore } from "@/stores/order";
+import type { Goods } from "@/stores/goods";
 
 const goodsStore = useGoodsStore();
 const userStore = useUserStore();
 const orderStore = useOrderStore();
 
 const goodsId = ref("");
+const goods = ref<Goods | null>(null);
 const remark = ref("");
 const showBuyPopup = ref(false);
+const isOwner = ref(false);
+const canBuy = ref(false);
 
-const goods = computed(() => goodsStore.getById(goodsId.value));
-const isOwner = computed(() => goods.value?.sellerId === userStore.currentUser?.id);
-const canBuy = computed(
-  () => userStore.isLogin && !isOwner.value && goods.value?.status === "on_sale",
-);
-
-onLoad((query) => {
+onLoad(async (query) => {
   goodsId.value = query?.id || "";
-  if (goodsId.value) goodsStore.view(goodsId.value);
+  if (goodsId.value) {
+    goods.value = await goodsStore.getById(goodsId.value);
+    goodsStore.view(goodsId.value);
+    isOwner.value = goods.value?.sellerId === String(userStore.currentUser?.id);
+    canBuy.value = userStore.isLogin && !isOwner.value && goods.value?.status === "on_sale";
+  }
 });
 
 function openBuy() {
@@ -32,9 +35,9 @@ function openBuy() {
   showBuyPopup.value = true;
 }
 
-function confirmBuy() {
+async function confirmBuy() {
   if (!goods.value) return;
-  orderStore.create(goods.value.id, userStore.currentUser!.id, goods.value.sellerId, remark.value);
+  await orderStore.create(goods.value.id, String(userStore.currentUser!.id), goods.value.sellerId, remark.value);
   showBuyPopup.value = false;
   remark.value = "";
   uni.showToast({ title: "购买请求已发送", icon: "success" });
