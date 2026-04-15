@@ -11,6 +11,10 @@ jobs:
     steps:  
       - uses: actions/checkout@v6
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
       - uses: pnpm/action-setup@v6
         with:
           version: latest
@@ -32,7 +36,9 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6
-
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
       - uses: pnpm/action-setup@v6
         with:
           version: latest
