@@ -124,9 +124,7 @@ func (h *OrderHandler) UpdateStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "status updated"})
 }
 
-func (h *OrderHandler) RegisterRoutes(rg *gin.RouterGroup, svc *service.OrderService, goodsSvc *service.GoodsService) {
-	h.svc = svc
-	h.goodsSvc = goodsSvc
+func (h *OrderHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	orders := rg.Group("/orders")
 	orders.Use(middleware.AuthRequired())
 	orders.POST("", h.Create)

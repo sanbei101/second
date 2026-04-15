@@ -118,8 +118,7 @@ func (h *UserHandler) UpdateProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func (h *UserHandler) RegisterRoutes(rg *gin.RouterGroup, svc *service.UserService) {
-	h.svc = svc
+func (h *UserHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	auth := rg.Group("/auth")
 	auth.POST("/register", h.Register)
 	auth.POST("/login", h.Login)

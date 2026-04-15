@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/phuslu/log"
 	"gorm.io/driver/postgres"
@@ -50,10 +52,19 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Recovery())
 
+	r.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization", "Accept", "X-Requested-With"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
 	api := r.Group("/api")
-	userHandler.RegisterRoutes(api, userSvc)
-	goodsHandler.RegisterRoutes(api, goodsSvc)
-	orderHandler.RegisterRoutes(api, orderSvc, goodsSvc)
+	userHandler.RegisterRoutes(api)
+	goodsHandler.RegisterRoutes(api)
+	orderHandler.RegisterRoutes(api)
 
 	port := 8848
 	log.Info().Msgf("server starting on :%d", port)

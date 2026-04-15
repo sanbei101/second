@@ -189,8 +189,7 @@ func (h *GoodsHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "deleted"})
 }
 
-func (h *GoodsHandler) RegisterRoutes(rg *gin.RouterGroup, svc *service.GoodsService) {
-	h.svc = svc
+func (h *GoodsHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	goods := rg.Group("/goods")
 	goods.GET("", h.List)
 	goods.GET("/:id", h.GetByID)
