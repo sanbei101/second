@@ -37,7 +37,12 @@ function openBuy() {
 
 async function confirmBuy() {
   if (!goods.value) return;
-  await orderStore.create(goods.value.id, String(userStore.currentUser!.id), goods.value.sellerId, remark.value);
+  await orderStore.create(
+    goods.value.id,
+    String(userStore.currentUser!.id),
+    goods.value.sellerId,
+    remark.value,
+  );
   showBuyPopup.value = false;
   remark.value = "";
   uni.showToast({ title: "购买请求已发送", icon: "success" });

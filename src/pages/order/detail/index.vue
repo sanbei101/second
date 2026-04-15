@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { useOrderStore } from "@/stores/order";
-import type { OrderStatus, Order  } from "@/stores/order";
+import type { OrderStatus, Order } from "@/stores/order";
 import { useUserStore } from "@/stores/user";
 import { useGoodsStore } from "@/stores/goods";
 import type { Goods } from "@/stores/goods";

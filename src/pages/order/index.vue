@@ -46,7 +46,10 @@ onShow(() => {
   <view>
     <wd-navbar title="我的订单" safe-area-inset-top fixed placeholder />
 
-    <wd-tabs v-model="activeTab" @change="orderStore.fetchList($event.index === 0 ? 'buyer' : 'seller')">
+    <wd-tabs
+      v-model="activeTab"
+      @change="orderStore.fetchList($event.index === 0 ? 'buyer' : 'seller')"
+    >
       <wd-tab v-for="(t, i) in tabs" :key="i" :title="t" />
     </wd-tabs>
 
