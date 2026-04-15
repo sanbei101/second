@@ -79,9 +79,7 @@ function goBack() {
         <wd-tag type="success">{{ goods.condition }}</wd-tag>
       </view>
       <view style="font-size: 14px; color: #666; margin-top: 12px; line-height: 1.6">
-        {{
-          goods.description
-        }}
+        {{ goods.description }}
       </view>
       <view style="font-size: 12px; color: #999; margin-top: 12px">
         浏览 {{ goods.viewCount }} · 发布于

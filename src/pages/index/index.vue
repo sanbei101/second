@@ -57,12 +57,17 @@ onShow(() => {
       </view>
 
       <wd-card
-        v-for="item in filteredGoods" :key="item.id" :title="item.title" style="margin-bottom: 12px"
+        v-for="item in filteredGoods"
+        :key="item.id"
+        :title="item.title"
+        style="margin-bottom: 12px"
         @click="goDetail(item.id)"
       >
         <view style="display: flex; gap: 12px">
           <wd-img
-            :src="item.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'" width="80" height="80"
+            :src="item.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'"
+            width="80"
+            height="80"
             radius="4"
           />
           <view style="flex: 1">

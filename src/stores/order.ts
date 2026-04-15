@@ -14,7 +14,7 @@ export type Order = {
   remark: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 const STORAGE_KEY = "campus_secondhand_orders";
 
@@ -32,7 +32,7 @@ export const useOrderStore = defineStore("order", () => {
 
   function create(goodsId: string, buyerId: string, sellerId: string, remark: string = "") {
     const order: Order = {
-      id: `o_${  Date.now()}`,
+      id: `o_${Date.now()}`,
       goodsId,
       buyerId,
       sellerId,

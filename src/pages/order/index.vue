@@ -68,14 +68,10 @@ function goDetail(id: string) {
           "
         >
           <wd-tag :type="statusType[item.status] as any" size="small">
-            {{
-              statusText[item.status]
-            }}
+            {{ statusText[item.status] }}
           </wd-tag>
           <view style="font-size: 12px; color: #999">
-            {{
-              new Date(item.createdAt).toLocaleString()
-            }}
+            {{ new Date(item.createdAt).toLocaleString() }}
           </view>
         </view>
 

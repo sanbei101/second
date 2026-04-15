@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { useOrderStore  } from "@/stores/order";
-import type {OrderStatus} from "@/stores/order";
+import { useOrderStore } from "@/stores/order";
+import type { OrderStatus } from "@/stores/order";
 import { useUserStore } from "@/stores/user";
 import { useGoodsStore } from "@/stores/goods";
 
@@ -41,9 +41,18 @@ function goBack() {
 
 <template>
   <view v-if="order && goods">
-    <wd-navbar title="订单详情" safe-area-inset-top fixed placeholder left-arrow @click-left="goBack" />
+    <wd-navbar
+      title="订单详情"
+      safe-area-inset-top
+      fixed
+      placeholder
+      left-arrow
+      @click-left="goBack"
+    />
 
-    <view style="padding: 16px; background: #4d80f0; color: #fff; text-align: center; margin-top: 44px">
+    <view
+      style="padding: 16px; background: #4d80f0; color: #fff; text-align: center; margin-top: 44px"
+    >
       <view style="font-size: 20px; font-weight: bold">{{ statusText[order.status] }}</view>
     </view>
 
@@ -51,12 +60,16 @@ function goBack() {
       <view style="font-size: 15px; font-weight: bold; margin-bottom: 12px">商品信息</view>
       <view style="display: flex; gap: 12px">
         <wd-img
-          :src="goods.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'" width="80" height="80"
+          :src="goods.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'"
+          width="80"
+          height="80"
           radius="4"
         />
         <view>
           <view style="font-size: 15px">{{ goods.title }}</view>
-          <text style="color: #f44; font-size: 16px; font-weight: bold; margin-top: 4px">¥{{ goods.price }}</text>
+          <text style="color: #f44; font-size: 16px; font-weight: bold; margin-top: 4px"
+            >¥{{ goods.price }}</text
+          >
         </view>
       </view>
     </view>
@@ -69,7 +82,10 @@ function goBack() {
       <wd-cell title="买家留言" :value="order.remark || '无'" />
     </view>
 
-    <view v-if="order.status === 'pending' && isSeller" style="padding: 16px; display: flex; gap: 12px">
+    <view
+      v-if="order.status === 'pending' && isSeller"
+      style="padding: 16px; display: flex; gap: 12px"
+    >
       <wd-button type="danger" block @click="changeStatus('cancelled')">拒绝交易</wd-button>
       <wd-button type="primary" block @click="changeStatus('confirmed')">确认交易</wd-button>
     </view>

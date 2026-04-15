@@ -18,7 +18,7 @@ export type Goods = {
   status: GoodsStatus;
   viewCount: number;
   createdAt: string;
-}
+};
 
 const STORAGE_KEY = "campus_secondhand_goods";
 
@@ -125,7 +125,7 @@ export const useGoodsStore = defineStore("goods", () => {
   function add(goods: Omit<Goods, "id" | "createdAt" | "viewCount" | "status">) {
     const newGoods: Goods = {
       ...goods,
-      id: `g_${  Date.now()}`,
+      id: `g_${Date.now()}`,
       status: "on_sale",
       viewCount: 0,
       createdAt: new Date().toISOString(),
