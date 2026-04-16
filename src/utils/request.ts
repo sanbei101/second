@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8848/api";
+const BASE_URL = "https://second-api.sanbei.codes:8849/api";
 
 export function request<T>(options: UniApp.RequestOptions): Promise<T> {
   const token = uni.getStorageSync("token");
