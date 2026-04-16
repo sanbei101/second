@@ -27,6 +27,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to connect database")
 	}
+	log.Info().Msg("database connected")
 
 	if len(os.Args) > 1 && os.Args[1] == "migrate" {
 		if err := db.AutoMigrate(&model.User{}, &model.Goods{}, &model.Order{}); err != nil {
@@ -48,7 +49,6 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Recovery())
-
 	r.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
@@ -57,7 +57,9 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "welcome to second-hand trading platform API"})
+	})
 	api := r.Group("/api")
 	userHandler.RegisterRoutes(api)
 	goodsHandler.RegisterRoutes(api)
