@@ -17,7 +17,6 @@ import (
 )
 
 func main() {
-
 	log.DefaultLogger = log.Logger{
 		Level:  log.InfoLevel,
 		Writer: &log.IOWriter{Writer: os.Stderr},
@@ -29,13 +28,11 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to connect database")
 	}
 
-	if err := db.AutoMigrate(&model.User{}, &model.Goods{}, &model.Order{}); err != nil {
-		log.Fatal().Err(err).Msg("failed to migrate database")
-	}
-
-	log.Info().Msg("database connected and migrated")
-
 	if len(os.Args) > 1 && os.Args[1] == "migrate" {
+		if err := db.AutoMigrate(&model.User{}, &model.Goods{}, &model.Order{}); err != nil {
+			log.Fatal().Err(err).Msg("failed to migrate database")
+		}
+		log.Info().Msg("database connected and migrated")
 		Migrate(db)
 		return
 	}
