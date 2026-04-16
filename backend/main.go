@@ -22,7 +22,7 @@ func main() {
 		Writer: &log.IOWriter{Writer: os.Stderr},
 	}
 
-	dsn := "host=localhost user=sanbei password=123456 dbname=sanbei port=5432 sslmode=disable"
+	dsn := "host=154.8.213.38 user=myuser password=mypassword dbname=second port=5433 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to connect database")
