@@ -10,6 +10,9 @@ jobs:
   docker-build:
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Login to HUAWEI Container Registry
         uses: docker/login-action@v4
         with:
