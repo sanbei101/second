@@ -1,12 +1,13 @@
 {
   "name": "second",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "unh dev",
     "build": "unh build",
     "build:wx": "unh build wx",
+    "upload:weixin": "pnpm build:wx && node upload.js",
     "about": "unh info",
     "fmt": "oxfmt",
     "type-check": "vue-tsc --noEmit",
@@ -53,6 +54,7 @@
     "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.2.0",
     "miniprogram-api-typings": "^5.1.2",
+    "miniprogram-ci": "^2.1.31",
     "oxfmt": "^0.45.0",
     "sass": "1.99.0",
     "typescript": "5.9.3",

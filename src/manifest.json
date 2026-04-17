@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "appid": "",
+  "name": "校园二手交易平台",
+  "appid": "wxcf90b73a0b3985b1",
   "description": "",
   "versionName": "1.0.0",
   "versionCode": "100",
@@ -47,10 +47,12 @@
   },
   "quickapp": {},
   "mp-weixin": {
-    "appid": "",
+    "appid": "wxcf90b73a0b3985b1",
     "setting": {
-      "urlCheck": false
+      "urlCheck": false,
+      "minified": true
     },
+    "lazyCodeLoading": "requiredComponents",
     "usingComponents": true,
     "darkmode": true,
     "themeLocation": "theme.json"
