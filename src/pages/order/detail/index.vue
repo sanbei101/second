@@ -11,13 +11,13 @@ const orderStore = useOrderStore();
 const userStore = useUserStore();
 const goodsStore = useGoodsStore();
 
-const orderId = ref("");
+const orderId = ref(0);
 const order = ref<Order | null>(null);
 const goods = ref<Goods | null>(null);
 const isSeller = ref(false);
 const isBuyer = ref(false);
 
-const statusText: Record<string, string> = {
+const statusText: Record<OrderStatus, string> = {
   pending: "待卖家确认",
   confirmed: "交易已确认",
   cancelled: "交易已取消",
@@ -25,12 +25,12 @@ const statusText: Record<string, string> = {
 };
 
 onLoad(async (query) => {
-  orderId.value = query?.id || "";
+  orderId.value = Number(query?.id) || 0;
   if (orderId.value) {
     order.value = await orderStore.fetchById(orderId.value);
     goods.value = order.value.goods || null;
-    isSeller.value = order.value.sellerId === String(userStore.currentUser?.id);
-    isBuyer.value = order.value.buyerId === String(userStore.currentUser?.id);
+    isSeller.value = order.value.sellerId === userStore.currentUser?.id;
+    isBuyer.value = order.value.buyerId === userStore.currentUser?.id;
   }
 });
 

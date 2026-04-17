@@ -10,7 +10,7 @@ const goodsStore = useGoodsStore();
 const userStore = useUserStore();
 const orderStore = useOrderStore();
 
-const goodsId = ref("");
+const goodsId = ref(0);
 const goods = ref<Goods | null>(null);
 const remark = ref("");
 const showBuyPopup = ref(false);
@@ -18,11 +18,11 @@ const isOwner = ref(false);
 const canBuy = ref(false);
 
 onLoad(async (query) => {
-  goodsId.value = query?.id || "";
+  goodsId.value = Number(query?.id) || 0;
   if (goodsId.value) {
     goods.value = await goodsStore.getById(goodsId.value);
     goodsStore.view(goodsId.value);
-    isOwner.value = goods.value?.sellerId === String(userStore.currentUser?.id);
+    isOwner.value = goods.value?.sellerId === userStore.currentUser?.id;
     canBuy.value = userStore.isLogin && !isOwner.value && goods.value?.status === "on_sale";
   }
 });
@@ -39,7 +39,7 @@ async function confirmBuy() {
   if (!goods.value) return;
   await orderStore.create(
     goods.value.id,
-    String(userStore.currentUser!.id),
+    userStore.currentUser!.id,
     goods.value.sellerId,
     remark.value,
   );

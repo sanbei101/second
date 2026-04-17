@@ -7,7 +7,7 @@ import { useUserStore } from "@/stores/user";
 
 const goodsStore = useGoodsStore();
 const userStore = useUserStore();
-const list = computed(() => goodsStore.getBySeller(String(userStore.currentUser?.id)));
+const list = computed(() => goodsStore.getBySeller(userStore.currentUser?.id ?? 0));
 
 onShow(() => {
   goodsStore.fetchList();
@@ -17,7 +17,7 @@ function editGoods(item: Goods) {
   uni.navigateTo({ url: `/pages/publish/index?id=${item.id}` });
 }
 
-async function deleteGoods(id: string) {
+async function deleteGoods(id: number) {
   uni.showModal({
     title: "确认删除",
     content: "删除后不可恢复",

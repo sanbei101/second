@@ -6,46 +6,41 @@ import type { Goods } from "./goods";
 export type OrderStatus = "pending" | "confirmed" | "cancelled" | "completed";
 
 export type Order = {
-  id: string;
-  goodsId: string;
+  id: number;
+  goodsId: number;
   goods?: Goods;
-  buyerId: string;
-  sellerId: string;
+  buyerId: number;
+  sellerId: number;
   status: OrderStatus;
   remark: string;
   createdAt: string;
   updatedAt: string;
 };
 
-function normalizeGoods(item: any): Goods {
-  let images: string[] = [];
-  if (Array.isArray(item.images)) {
-    images = item.images;
-  } else if (typeof item.images === "string") {
-    try {
-      images = JSON.parse(item.images);
-    } catch {
-      images = item.images ? [item.images] : [];
-    }
-  }
-  return {
-    ...item,
-    id: String(item.id),
-    sellerId: String(item.sellerId),
-    images,
-  };
-}
+type ListOrdersResponse = {
+  orders: Order[];
+};
 
-function normalizeOrder(item: any): Order {
-  const order: Order = {
-    ...item,
-    id: String(item.id),
-    goodsId: String(item.goodsId),
-    buyerId: String(item.buyerId),
-    sellerId: String(item.sellerId),
-  };
-  if (item.goods) {
-    order.goods = normalizeGoods(item.goods);
+type OrderResponse = {
+  order: Order;
+};
+
+type MessageResponse = {
+  message: string;
+};
+
+function parseOrderImages(order: Order): Order {
+  if (order.goods) {
+    const raw = order.goods.images;
+    if (Array.isArray(raw)) {
+      order.goods.images = raw;
+    } else if (typeof raw === "string") {
+      try {
+        order.goods.images = JSON.parse(raw) as string[];
+      } catch {
+        order.goods.images = [];
+      }
+    }
   }
   return order;
 }
@@ -54,40 +49,39 @@ export const useOrderStore = defineStore("order", () => {
   const orders = ref<Order[]>([]);
 
   async function fetchList(role: "buyer" | "seller" = "buyer") {
-    const data = await request<{ orders: any[] }>({
+    const data = await request<ListOrdersResponse>({
       url: "/orders",
       method: "GET",
       data: { role },
     });
-    orders.value = data.orders.map(normalizeOrder);
+    orders.value = data.orders.map(parseOrderImages);
     return orders.value;
   }
 
-  async function fetchById(id: string) {
+  async function fetchById(id: number) {
     const existing = orders.value.find((o) => o.id === id);
     if (existing) return existing;
-    const data = await request<{ order: any }>({
+    const data = await request<OrderResponse>({
       url: `/orders/${id}`,
       method: "GET",
     });
-    const order = normalizeOrder(data.order);
+    const order = parseOrderImages(data.order);
     orders.value.push(order);
     return order;
   }
 
-  async function create(goodsId: string, _buyerId: string, _sellerId: string, remark: string = "") {
-    const data = await request<{ order: any }>({
+  async function create(goodsId: number, _sellerId: number, remark: string = "") {
+    const data = await request<OrderResponse>({
       url: "/orders",
       method: "POST",
-      data: { goodsId: Number(goodsId), remark },
+      data: { goodsId, remark },
     });
-    const order = normalizeOrder(data.order);
-    orders.value.unshift(order);
-    return order.id;
+    orders.value.unshift(data.order);
+    return data.order.id;
   }
 
-  async function updateStatus(id: string, status: OrderStatus) {
-    await request({
+  async function updateStatus(id: number, status: OrderStatus) {
+    await request<MessageResponse>({
       url: `/orders/${id}/status`,
       method: "PUT",
       data: { status },
@@ -99,17 +93,17 @@ export const useOrderStore = defineStore("order", () => {
     return true;
   }
 
-  function getById(id: string) {
+  function getById(id: number) {
     return orders.value.find((o) => o.id === id);
   }
 
-  function getByBuyer(buyerId: string) {
+  function getByBuyer(buyerId: number) {
     return orders.value
       .filter((o) => o.buyerId === buyerId)
       .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
   }
 
-  function getBySeller(sellerId: string) {
+  function getBySeller(sellerId: number) {
     return orders.value
       .filter((o) => o.sellerId === sellerId)
       .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));

@@ -9,7 +9,7 @@ const activeIndex = ref(0);
 const currentCategory = computed(() => categories[activeIndex.value]);
 const list = computed(() => goodsStore.filterList({ category: currentCategory.value }));
 
-function goDetail(id: string) {
+function goDetail(id: number) {
   goodsStore.view(id);
   uni.navigateTo({ url: `/pages/goods/detail/index?id=${id}` });
 }

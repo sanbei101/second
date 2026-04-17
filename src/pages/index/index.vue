@@ -35,7 +35,7 @@ async function onSearch() {
   await loadGoods(true);
 }
 
-function goDetail(id: string) {
+function goDetail(id: number) {
   goodsStore.view(id);
   uni.navigateTo({ url: `/pages/goods/detail/index?id=${id}` });
 }
@@ -79,17 +79,25 @@ onShow(() => {
       <view v-for="item in filteredGoods" :key="item.id" @click="goDetail(item.id)">
         <wd-card :title="item.title" style="margin-bottom: 12px">
           <view style="display: flex; gap: 12px">
-            <wd-img :src="item.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'" width="80" height="80"
-              radius="4" />
+            <wd-img
+              :src="item.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'"
+              width="80"
+              height="80"
+              radius="4"
+            />
             <view style="flex: 1">
               <wd-text :text="item.description" :lines="2" style="color: #666; font-size: 13px" />
-              <view style="
-                margin-top: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-              ">
-                <text style="color: #f44; font-size: 16px; font-weight: bold">¥{{ item.price }}</text>
+              <view
+                style="
+                  margin-top: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                "
+              >
+                <text style="color: #f44; font-size: 16px; font-weight: bold"
+                  >¥{{ item.price }}</text
+                >
                 <wd-tag type="primary" size="small">{{ item.condition }}</wd-tag>
               </view>
               <view style="margin-top: 4px; font-size: 12px; color: #999">
@@ -103,8 +111,10 @@ onShow(() => {
       <view v-if="hasMore" style="text-align: center; padding: 16px">
         <wd-button size="small" :loading="loading" @click="onLoadMore">加载更多</wd-button>
       </view>
-      <view v-else-if="filteredGoods.length > 0"
-        style="text-align: center; padding: 16px; color: #999; font-size: 12px">
+      <view
+        v-else-if="filteredGoods.length > 0"
+        style="text-align: center; padding: 16px; color: #999; font-size: 12px"
+      >
         没有更多了
       </view>
 

@@ -4,9 +4,11 @@ import { request } from "@/utils/request";
 import type { User } from "./user";
 
 export type GoodsStatus = "on_sale" | "sold" | "off_shelf";
+export type GoodsCondition = "全新" | "99新" | "95新" | "9成新" | "8成新";
+export type GoodsCategory = "电子产品" | "书籍教材" | "生活用品" | "服装鞋帽" | "交通工具" | "其他";
 
 export type Goods = {
-  id: string;
+  id: number;
   title: string;
   description: string;
   price: number;
@@ -14,34 +16,47 @@ export type Goods = {
   category: string;
   condition: string;
   images: string[];
-  sellerId: string;
+  sellerId: number;
   seller?: User;
   status: GoodsStatus;
   viewCount: number;
   createdAt: string;
 };
 
-function normalizeGoods(item: any): Goods {
-  let images: string[] = [];
-  if (Array.isArray(item.images)) {
-    images = item.images;
-  } else if (typeof item.images === "string") {
-    try {
-      images = JSON.parse(item.images);
-    } catch {
-      images = item.images ? [item.images] : [];
-    }
-  }
-  return {
-    ...item,
-    id: String(item.id),
-    sellerId: String(item.sellerId),
-    images,
-  };
-}
+export const categories: GoodsCategory[] = [
+  "电子产品",
+  "书籍教材",
+  "生活用品",
+  "服装鞋帽",
+  "交通工具",
+  "其他",
+];
 
-export const categories = ["电子产品", "书籍教材", "生活用品", "服装鞋帽", "交通工具", "其他"];
-export const conditions = ["全新", "99新", "95新", "9成新", "8成新"];
+export const conditions: GoodsCondition[] = ["全新", "99新", "95新", "9成新", "8成新"];
+
+type ListGoodsParams = {
+  keyword?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  page?: number;
+  pageSize?: number;
+};
+
+type ListGoodsResponse = {
+  goods: Goods[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
+
+type GoodsResponse = {
+  goods: Goods;
+};
+
+type MessageResponse = {
+  message: string;
+};
 
 export const useGoodsStore = defineStore("goods", () => {
   const goodsList = ref<Goods[]>([]);
@@ -49,65 +64,53 @@ export const useGoodsStore = defineStore("goods", () => {
   const page = ref(1);
   const pageSize = ref(10);
 
-  async function fetchList(params?: {
-    keyword?: string;
-    category?: string;
-    minPrice?: number;
-    maxPrice?: number;
-    page?: number;
-    pageSize?: number;
-  }) {
-    const query: Record<string, any> = {};
+  async function fetchList(params?: ListGoodsParams) {
+    const query: ListGoodsParams = {
+      page: params?.page ?? 1,
+      pageSize: params?.pageSize ?? 10,
+    };
     if (params?.keyword) query.keyword = params.keyword;
     if (params?.category && params.category !== "全部") query.category = params.category;
     if (params?.minPrice !== undefined) query.minPrice = params.minPrice;
     if (params?.maxPrice !== undefined) query.maxPrice = params.maxPrice;
-    query.page = params?.page ?? 1;
-    query.pageSize = params?.pageSize ?? 10;
 
-    const data = await request<{ goods: any[]; total: number }>({
+    const data = await request<ListGoodsResponse>({
       url: "/goods",
       method: "GET",
-      data: query,
+      data: query as Record<string, string | number | undefined>,
     });
-    goodsList.value = data.goods.map(normalizeGoods);
+    goodsList.value = data.goods;
     total.value = data.total;
-    page.value = query.page;
-    pageSize.value = query.pageSize;
+    page.value = data.page;
+    pageSize.value = data.pageSize;
     return goodsList.value;
   }
 
-  async function getById(id: string) {
+  async function getById(id: number) {
     const existing = goodsList.value.find((g) => g.id === id);
     if (existing) return existing;
-    const data = await request<{ goods: any }>({
+    const data = await request<GoodsResponse>({
       url: `/goods/${id}`,
       method: "GET",
     });
-    return normalizeGoods(data.goods);
+    return data.goods;
   }
 
   async function add(goods: Omit<Goods, "id" | "createdAt" | "viewCount" | "status">) {
-    const data = await request<{ goods: any }>({
+    const data = await request<GoodsResponse>({
       url: "/goods",
       method: "POST",
-      data: {
-        ...goods,
-        sellerId: Number(goods.sellerId),
-      },
+      data: goods,
     });
-    const g = normalizeGoods(data.goods);
-    goodsList.value.unshift(g);
-    return g.id;
+    goodsList.value.unshift(data.goods);
+    return data.goods.id;
   }
 
-  async function update(id: string, data: Partial<Goods>) {
-    const payload: any = { ...data };
-    if (data.sellerId !== undefined) payload.sellerId = Number(data.sellerId);
-    await request({
+  async function update(id: number, data: Partial<Goods>) {
+    await request<MessageResponse>({
       url: `/goods/${id}`,
       method: "PUT",
-      data: payload,
+      data,
     });
     const idx = goodsList.value.findIndex((g) => g.id === id);
     if (idx > -1) {
@@ -116,8 +119,8 @@ export const useGoodsStore = defineStore("goods", () => {
     return true;
   }
 
-  async function remove(id: string) {
-    await request({
+  async function remove(id: number) {
+    await request<MessageResponse>({
       url: `/goods/${id}`,
       method: "DELETE",
     });
@@ -126,7 +129,7 @@ export const useGoodsStore = defineStore("goods", () => {
     return true;
   }
 
-  function view(id: string) {
+  function view(id: number) {
     const idx = goodsList.value.findIndex((g) => g.id === id);
     if (idx > -1) {
       goodsList.value[idx].viewCount++;
@@ -151,7 +154,7 @@ export const useGoodsStore = defineStore("goods", () => {
     });
   }
 
-  function getBySeller(sellerId: string) {
+  function getBySeller(sellerId: number) {
     return goodsList.value.filter((g) => g.sellerId === sellerId);
   }
 

@@ -7,7 +7,7 @@ const goodsStore = useGoodsStore();
 const userStore = useUserStore();
 
 const isEdit = ref(false);
-const goodsId = ref("");
+const goodsId = ref(0);
 const title = ref("");
 const description = ref("");
 const price = ref("");
@@ -67,7 +67,7 @@ async function submit() {
     category: category.value,
     condition: condition.value,
     images: images.value,
-    sellerId: String(userStore.currentUser.id),
+    sellerId: userStore.currentUser.id,
   };
   if (isEdit.value) {
     await goodsStore.update(goodsId.value, data);

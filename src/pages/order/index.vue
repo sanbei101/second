@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { onShow } from "@dcloudio/uni-app";
 import { useOrderStore } from "@/stores/order";
+import type { OrderStatus } from "@/stores/order";
 import { useUserStore } from "@/stores/user";
 
 const orderStore = useOrderStore();
@@ -14,26 +15,26 @@ const list = computed(() => {
   if (!userStore.currentUser) return [];
   const orders =
     activeTab.value === 0
-      ? orderStore.getByBuyer(String(userStore.currentUser.id))
-      : orderStore.getBySeller(String(userStore.currentUser.id));
+      ? orderStore.getByBuyer(userStore.currentUser.id)
+      : orderStore.getBySeller(userStore.currentUser.id);
   return orders;
 });
 
-const statusText: Record<string, string> = {
+const statusText: Record<OrderStatus, string> = {
   pending: "待确认",
   confirmed: "已确认",
   cancelled: "已取消",
   completed: "已完成",
 };
 
-const statusType: Record<string, string> = {
+const statusType: Record<OrderStatus, string> = {
   pending: "warning",
   confirmed: "success",
   cancelled: "default",
   completed: "primary",
 };
 
-function goDetail(id: string) {
+function goDetail(id: number) {
   uni.navigateTo({ url: `/pages/order/detail/index?id=${id}` });
 }
 
