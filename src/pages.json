@@ -75,10 +75,10 @@
     ]
   },
   "globalStyle": {
-    "backgroundColor": "@bgColor",
-    "backgroundColorBottom": "@bgColorBottom",
-    "backgroundColorTop": "@bgColorTop",
-    "backgroundTextStyle": "@bgTxtStyle",
+    "backgroundColor": "#F4F5F6",
+    "backgroundColorBottom": "#F4F5F6",
+    "backgroundColorTop": "#F4F5F6",
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "校园二手交易",
