@@ -66,6 +66,8 @@ type ListGoodsReq struct {
 	Category string  `query:"category"`
 	MinPrice float64 `query:"minPrice"`
 	MaxPrice float64 `query:"maxPrice"`
+	Page     int     `query:"page" default:"1"`      // 页码，默认1
+	PageSize int     `query:"pageSize" default:"10"` // 每页数量，默认10
 }
 
 func (h *GoodsHandler) List(c *gin.Context) {
@@ -75,7 +77,7 @@ func (h *GoodsHandler) List(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	goods, err := h.svc.List(req.Keyword, req.Category, req.MinPrice, req.MaxPrice)
+	goods, total, err := h.svc.List(req.Keyword, req.Category, req.MinPrice, req.MaxPrice, req.Page, req.PageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -91,7 +93,12 @@ func (h *GoodsHandler) List(c *gin.Context) {
 		json.Unmarshal([]byte(g.Images), &result[i].Images)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"goods": result})
+	c.JSON(http.StatusOK, gin.H{
+		"goods":    result,
+		"total":    total,
+		"page":     req.Page,
+		"pageSize": req.PageSize,
+	})
 }
 
 func (h *GoodsHandler) GetByID(c *gin.Context) {

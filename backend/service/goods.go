@@ -36,8 +36,8 @@ func (s *GoodsService) GetByID(id uint) (*model.Goods, error) {
 	return &goods, nil
 }
 
-func (s *GoodsService) List(keyword, category string, minPrice, maxPrice float64) ([]model.Goods, error) {
-	query := s.db.Model(&model.Goods{}).Preload("Seller").Where("status = ?", model.GoodsOnSale)
+func (s *GoodsService) List(keyword, category string, minPrice, maxPrice float64, page, pageSize int) ([]model.Goods, int64, error) {
+	query := s.db.Model(&model.Goods{}).Where("status = ?", model.GoodsOnSale)
 
 	if keyword != "" {
 		query = query.Where("title ILIKE ?", "%"+keyword+"%")
@@ -52,13 +52,20 @@ func (s *GoodsService) List(keyword, category string, minPrice, maxPrice float64
 		query = query.Where("price <= ?", maxPrice)
 	}
 
-	var goods []model.Goods
-	if err := query.Order("created_at DESC").Find(&goods).Error; err != nil {
-		log.Error().Err(err).Msg("list goods failed")
-		return nil, err
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		log.Error().Err(err).Msg("count goods failed")
+		return nil, 0, err
 	}
-	log.Info().Int("count", len(goods)).Str("keyword", keyword).Str("category", category).Msg("goods listed")
-	return goods, nil
+
+	var goods []model.Goods
+	offset := (page - 1) * pageSize
+	if err := query.Preload("Seller").Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&goods).Error; err != nil {
+		log.Error().Err(err).Msg("list goods failed")
+		return nil, 0, err
+	}
+	log.Info().Int("count", len(goods)).Int64("total", total).Str("keyword", keyword).Str("category", category).Msg("goods listed")
+	return goods, total, nil
 }
 
 func (s *GoodsService) GetBySeller(sellerID uint) ([]model.Goods, error) {
