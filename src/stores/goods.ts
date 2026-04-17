@@ -45,25 +45,35 @@ export const conditions = ["全新", "99新", "95新", "9成新", "8成新"];
 
 export const useGoodsStore = defineStore("goods", () => {
   const goodsList = ref<Goods[]>([]);
+  const total = ref(0);
+  const page = ref(1);
+  const pageSize = ref(10);
 
   async function fetchList(params?: {
     keyword?: string;
     category?: string;
     minPrice?: number;
     maxPrice?: number;
+    page?: number;
+    pageSize?: number;
   }) {
     const query: Record<string, any> = {};
     if (params?.keyword) query.keyword = params.keyword;
     if (params?.category && params.category !== "全部") query.category = params.category;
     if (params?.minPrice !== undefined) query.minPrice = params.minPrice;
     if (params?.maxPrice !== undefined) query.maxPrice = params.maxPrice;
+    query.page = params?.page ?? 1;
+    query.pageSize = params?.pageSize ?? 10;
 
-    const data = await request<{ goods: any[] }>({
+    const data = await request<{ goods: any[]; total: number }>({
       url: "/goods",
       method: "GET",
       data: query,
     });
     goodsList.value = data.goods.map(normalizeGoods);
+    total.value = data.total;
+    page.value = query.page;
+    pageSize.value = query.pageSize;
     return goodsList.value;
   }
 
@@ -145,8 +155,14 @@ export const useGoodsStore = defineStore("goods", () => {
     return goodsList.value.filter((g) => g.sellerId === sellerId);
   }
 
+  const hasMore = computed(() => goodsList.value.length < total.value);
+
   return {
     goodsList,
+    total,
+    page,
+    pageSize,
+    hasMore,
     onSaleList,
     getById,
     getBySeller,

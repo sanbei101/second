@@ -7,27 +7,32 @@ const goodsStore = useGoodsStore();
 
 const keyword = ref("");
 const activeCategory = ref("全部");
-const priceRange = ref<[number, number]>([0, 10000]);
 const loading = ref(false);
+const refreshing = ref(false);
 
-const filteredGoods = computed(() => {
-  return goodsStore.filterList({
-    keyword: keyword.value,
-    category: activeCategory.value,
-    minPrice: priceRange.value[0],
-    maxPrice: priceRange.value[1],
-  });
-});
+const filteredGoods = computed(() => goodsStore.goodsList);
+const hasMore = computed<boolean>(() => goodsStore.hasMore);
 
-async function onSearch() {
-  loading.value = true;
+async function loadGoods(isRefresh = false) {
+  if (isRefresh) {
+    refreshing.value = true;
+  } else {
+    loading.value = true;
+  }
   await goodsStore.fetchList({
     keyword: keyword.value,
     category: activeCategory.value,
-    minPrice: priceRange.value[0],
-    maxPrice: priceRange.value[1],
+    page: isRefresh ? 1 : goodsStore.page,
+    pageSize: goodsStore.pageSize,
   });
+  if (isRefresh) {
+    refreshing.value = false;
+  }
   loading.value = false;
+}
+
+async function onSearch() {
+  await loadGoods(true);
 }
 
 function goDetail(id: string) {
@@ -40,8 +45,18 @@ function onCategoryChange(val: string | number) {
   onSearch();
 }
 
+async function onLoadMore() {
+  if (!hasMore.value || loading.value) return;
+  await goodsStore.fetchList({
+    keyword: keyword.value,
+    category: activeCategory.value,
+    page: goodsStore.page + 1,
+    pageSize: goodsStore.pageSize,
+  });
+}
+
 onShow(() => {
-  onSearch();
+  loadGoods(true);
 });
 </script>
 
@@ -57,7 +72,7 @@ onShow(() => {
     </wd-tabs>
 
     <view style="padding: 12px">
-      <view v-if="filteredGoods.length === 0" style="margin-top: 40px">
+      <view v-if="filteredGoods.length === 0 && !loading" style="margin-top: 40px">
         <wd-empty description="暂无商品" />
       </view>
 
@@ -83,6 +98,14 @@ onShow(() => {
             </view>
           </view>
         </wd-card>
+      </view>
+
+      <view v-if="hasMore" style="text-align: center; padding: 16px">
+        <wd-button size="small" :loading="loading" @click="onLoadMore">加载更多</wd-button>
+      </view>
+      <view v-else-if="filteredGoods.length > 0"
+        style="text-align: center; padding: 16px; color: #999; font-size: 12px">
+        没有更多了
       </view>
 
       <wd-toast />
