@@ -61,41 +61,31 @@ onShow(() => {
         <wd-empty description="暂无商品" />
       </view>
 
-      <wd-card
-        v-for="item in filteredGoods"
-        :key="item.id"
-        :title="item.title"
-        style="margin-bottom: 12px"
-        @click="goDetail(item.id)"
-      >
-        <view style="display: flex; gap: 12px">
-          <wd-img
-            :src="item.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'"
-            width="80"
-            height="80"
-            radius="4"
-          />
-          <view style="flex: 1">
-            <wd-text :text="item.description" :lines="2" style="color: #666; font-size: 13px" />
-            <view
-              style="
+      <view v-for="item in filteredGoods" :key="item.id" @click="goDetail(item.id)">
+        <wd-card :title="item.title" style="margin-bottom: 12px">
+          <view style="display: flex; gap: 12px">
+            <wd-img :src="item.images[0] || 'https://img.yzcdn.cn/vant/defaultpic.png'" width="80" height="80"
+              radius="4" />
+            <view style="flex: 1">
+              <wd-text :text="item.description" :lines="2" style="color: #666; font-size: 13px" />
+              <view style="
                 margin-top: 8px;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-              "
-            >
-              <text style="color: #f44; font-size: 16px; font-weight: bold">¥{{ item.price }}</text>
-              <wd-tag type="primary" size="small">{{ item.condition }}</wd-tag>
-            </view>
-            <view style="margin-top: 4px; font-size: 12px; color: #999">
-              {{ item.category }} · 浏览 {{ item.viewCount }}
+              ">
+                <text style="color: #f44; font-size: 16px; font-weight: bold">¥{{ item.price }}</text>
+                <wd-tag type="primary" size="small">{{ item.condition }}</wd-tag>
+              </view>
+              <view style="margin-top: 4px; font-size: 12px; color: #999">
+                {{ item.category }} · 浏览 {{ item.viewCount }}
+              </view>
             </view>
           </view>
-        </view>
-      </wd-card>
-    </view>
+        </wd-card>
+      </view>
 
-    <wd-toast />
+      <wd-toast />
+    </view>
   </view>
 </template>
